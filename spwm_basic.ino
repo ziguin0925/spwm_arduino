@@ -60,7 +60,7 @@ ISR(TIMER1_OVF_vect){
     OCR1A = lookUp1[num];//TCNT 증가시 OCR1A와 같아지면 출력비교 인터럽트 발생.
     OCR1B = lookUp2[num];
     
-    if(++num >= 40){ // Pre-increment num then check it's below 40. 없어도 될듯
+    if(++num >= 20){ // Pre-increment num then check it's below 40. 없어도 될듯
        num = 0;       // Reset num.
        trig = trig^0b00000001;
        digitalWrite(13,trig); //13번 핀을 통한 HIGH, LOW 제어부분
