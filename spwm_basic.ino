@@ -57,8 +57,8 @@ ISR(TIMER1_OVF_vect){
     static int num;
     static char trig;
     // change duty-cycle every period.
-    OCR1A = lookUp1[num];//TCNT 증가시 OCR1A와 같아지면 출력비교 인터럽트 발생.
-    OCR1B = lookUp2[num];
+    OCR1A = lookUp1[num];//OC1A
+    OCR1B = lookUp2[num];//OC1B
     
     if(++num >= 20){ // Pre-increment num then check it's below 40. 없어도 될듯
        num = 0;       // Reset num.
