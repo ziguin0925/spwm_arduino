@@ -52,9 +52,9 @@ void setup(){
   ICR4   = 799;     
                     
   sei();             
-  DDRB = 0b01100000; // Set outputs. pwm 11,12 pin 
-  DDRE = 0b00011000; // Set outputs. pwm 2,5 pin 
-  DDRH = 0b00011000; // Set outputs. pwm 6,7 pin 
+  DDRB = 0b01100000; // Set outputs. pwm 11,12(A) pin 
+  DDRE = 0b00011000; // Set outputs. pwm 2(A),5 pin 
+  DDRH = 0b00011000; // Set outputs. pwm 6,7(A) pin 
 
   
   pinMode(13,OUTPUT);
