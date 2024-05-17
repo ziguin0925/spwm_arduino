@@ -72,14 +72,15 @@ void loop(){; }
 
 
 
-
+// +32 는 32clock만큼 추가해서 데드타임 조정하는 거임(1clock = 0.0000000625초)
+// 데드타임 조정해주세요
 ISR(TIMER2_OVF_vect){
     OCR1A = lookUp1[num];
-    OCR1B = lookUp1[num];
+    OCR1B = lookUp1[num]+32;
     OCR3A = lookUp3[num];
-    OCR3B = lookUp3[num];
+    OCR3B = lookUp3[num]+32;
     OCR4A = lookUp4[num];
-    OCR4B = lookUp4[num];
+    OCR4B = lookUp4[num]+32;
     
     if(++num >= 40){
       num=0;
@@ -89,6 +90,9 @@ ISR(TIMER2_OVF_vect){
 
 
 /*
+atmega 2560 데이터 시트 확인 필수
+
+
 lookUptable 데이터 개수가 40개 이면 지령파는 500Hz
 맞는지 아두이노 꼽아서 spwm주기 계속 확인하기
 
@@ -98,6 +102,8 @@ TCNTn(clock)이 ICRn(Top)에 도달했다가 0(bottom)에 도달하면 ISR이 �
 lookuptable 이용하는 레지스터 n = 1,3,4
 num변환 시키는 레지스터 n = 2
 (TIMER2_OVF_vect의 인터럽트 서비스 루틴( ISR(){} )에서 다른 레지스터를 건들일 수 있는지 확인하기)
+
+
 
 삼각파는 10kHz로 고정
 제어를 할 때 lookup table을 이용해서 한다고 하면 runtime에 테이블 생성이 가능하지만 주파수가 바뀔 때 정확한 값을 대입하는 것에 문제가 있을 거라 생각이 됨. 
@@ -111,10 +117,18 @@ num변환 시키는 레지스터 n = 2
         4. 그냥 주파수 제어 하지말기.
 }
 
+시간 나누는 법만 알면 svpwm이 제어하기에 더 편할거같은데...
+
+
+OCRnA, OCRnB가 TCNTn과 같아졌을 때 interrupt 추가 가능한거로 보임( OCIEnA,OCIEnB 활성화를 통해)
+이거로 제어 할 방법도 생각해보기.
 
 물어볼거
 1. 레지스터에 대한 정보가 부족하므로 어떤 레지스터가 필요한지, 어떤 레지스터를 건들여야 하는지 물어봐주셈.
 2. 일반적인 mcu에서는 로직을 어떻게 짜는지 물어봐주셈.
+ { 주파수가 바뀔 때 sin파의 기준을 어떻게 정하는지.
+   sin안에 들어가는 제어할 변수는 어떻게 정하는지.}
+   
 
 */
 
