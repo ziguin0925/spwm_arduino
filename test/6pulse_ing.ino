@@ -1,9 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #define _MATH_DEFINES_DEFINED
-#include <math.h>
-
-
+#define N 20
 
 static unsigned int lookUp1[40];
 static unsigned int lookUp3[40];
@@ -15,54 +13,49 @@ static int num=0;
 void setup(){
 
 // lookUp1 table
-  for(int i = 0; i < 40; i++){ 
-    temp = 400*(sin((i/40)*2*M_PI)+1); //기본
+  for(int i = 0; i < 40; i++){
+    temp = 400*(sin(i*2*M_PI/40)+1); //기본
     lookUp1[i] = (int)(temp+0.5);
   }
 
 // lookUp3
   for(int i = 0; i < 40; i++){ 
-    temp = 400*(sin((i/40)*2*M_PI - M_PI/3)+1); // 120도 차이
+    temp = 400*(sin(i*2*M_PI/40-M_PI/3)); // 120도 차이
     lookUp3[i] = (int)(temp+0.5);
   }
-
   
 // lookUp5
   for(int i = 0; i < 40; i++){ 
-    temp = 400*(sin((i/40)*2*M_PI - 2*M_PI/3)+1); // 240도 차이
+    temp = 400*(sin(i*2*M_PI/40-2*M_PI/3)+1); // 240도 차이
     lookUp4[i] = (int)(temp+0.5);
   }
 
 // Set Register
-  // Use lookup table 
   TCCR1A = 0b10110010;
   TCCR1B = 0b00000001;
   TIMSK1 = 0b00000001;
   ICR1  = 799;
-
 
   TCCR3A = 0b10110010; 
   TCCR3B = 0b00000001;
   TIMSK3 = 0b00000001;
   ICR3   = 799;     
   
-  
   TCCR4A = 0b10110010;
   TCCR4B = 0b00000001;
   TIMSK4 = 0b00000001;
   ICR4   = 799;     
 
-  //TCNT가 799가 될때 마다 lookup table num 1씩 증가.
-  TCCR2A = 0b00000010; // 00 00 00 : Normal port operation, OCnA/OCnB/OCnC disconnected ( 10 waveform은 상관없음)
-  TCCR2B = 0b00011001;
-  TIMSK2 = 0b00000001;
-  ICR2  = 799;
-
+  TCCR5A = 0b00000010; // 00 00 00 : Normal port operation, OCnA/OCnB/OCnC disconnected ( 10 waveform은 상관없음)
+  TCCR5B = 0b00011001;
+  TIMSK5 = 0b00000001;
+  ICR5  = 799;
   
   sei();             
   DDRB = 0b01100000; // Set outputs. pwm 11,12 pin 
   DDRE = 0b00011000; // Set outputs. pwm 2,5 pin 
   DDRH = 0b00011000; // Set outputs. pwm 6,7 pin 
+  DDRL = 0b00011000;
 
   
   pinMode(13,OUTPUT);
@@ -70,23 +63,31 @@ void setup(){
 
 void loop(){; }
 
+// 핸들링
 
-
-// +32 는 32clock만큼 추가해서 데드타임 조정하는 거임(1clock = 0.0000000625초)
-// 데드타임 조정해주세요
-ISR(TIMER2_OVF_vect){
-    OCR1A = lookUp1[num];
-    OCR1B = lookUp1[num]+32;
-    OCR3A = lookUp3[num];
-    OCR3B = lookUp3[num]+32;
-    OCR4A = lookUp4[num];
-    OCR4B = lookUp4[num]+32;
-    
-    if(++num >= 40){
-      num=0;
-    }
+ISR(TIMER1_OVF_vect){
 }
 
+ISR(TIMER3_OVF_vect){
+}
+
+ISR(TIMER4_OVF_vect){
+
+}
+
+ISR(TIMER5_OVF_vect){//주기 1ms
+      OCR1A = lookUp1[num];
+    OCR1B = lookUp1[num]+32;
+        OCR3A = lookUp3[num];
+    OCR3B = lookUp3[num]+32;
+        OCR4A = lookUp4[num];
+    OCR4B = lookUp4[num]+32;
+    
+   
+     if(++num >= 40){
+      num=0;
+     }
+}
 
 
 /*
@@ -101,7 +102,6 @@ TCNTn(clock)이 ICRn(Top)에 도달했다가 0(bottom)에 도달하면 ISR이 �
 따라서 다른 인터럽트 서비스에 FastPWM으로 799가 되면 lookuptable의 num숫자가 증가하도록 설정
 lookuptable 이용하는 레지스터 n = 1,3,4
 num변환 시키는 레지스터 n = 2
-(TIMER2_OVF_vect의 인터럽트 서비스 루틴( ISR(){} )에서 다른 레지스터를 건들일 수 있는지 확인하기)
 
 
 

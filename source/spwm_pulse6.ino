@@ -15,6 +15,8 @@ static int num1 = 0, num3 = 0, num4 = 0;
 void setup(){
 
 // lookUp1 table
+
+//sin() 안에 식 (i*2*M_PI/20)로 바꿔주기*****************************
   for(int i = 0; i < 20; i++){ 
     temp = 400*(sin((i/20)*2*M_PI)+1); //기본
     lookUp1[i] = (int)(temp+0.5);
