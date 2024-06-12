@@ -1,11 +1,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #define _MATH_DEFINES_DEFINED
-#define N 20
+#define N 2000
 
-static unsigned int lookUp1[40];
-static unsigned int lookUp3[40];
-static unsigned int lookUp4[40];
+static unsigned int lookUp1[N];
+static unsigned int lookUp3[N];
+static unsigned int lookUp4[N];
 static double temp;
 static int num = 0;
 
@@ -14,19 +14,19 @@ void setup(){
 
 // lookUp1 table
   for(int i = 0; i < 40; i++){
-    temp = 400*(sin(i*2*M_PI/40)+1); //기본
+    temp = 400*(sin(i*2*M_PI/N)+1); //기본
     lookUp1[i] = (int)(temp+0.5);
   }
 
 // lookUp3
   for(int i = 0; i < 40; i++){ 
-    temp = 400*(sin(i*2*M_PI/40-M_PI/3)); // 120도 차이
+    temp = 400*(sin(i*2*M_PI/N-M_PI/3)); // 120도 차이
     lookUp3[i] = (int)(temp+0.5);
   }
   
 // lookUp5
   for(int i = 0; i < 40; i++){ 
-    temp = 400*(sin(i*2*M_PI/40-2*M_PI/3)+1); // 240도 차이
+    temp = 400*(sin(i*2*M_PI/N-2*M_PI/3)+1); // 240도 차이
     lookUp4[i] = (int)(temp+0.5);
   }
 
