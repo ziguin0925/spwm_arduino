@@ -7,7 +7,7 @@ static unsigned int lookUp1[40];
 static unsigned int lookUp3[40];
 static unsigned int lookUp4[40];
 static double temp;
-static int num=0;
+static int num = 0;
 
 
 void setup(){
@@ -72,7 +72,7 @@ ISR(TIMER3_OVF_vect){
 }
 
 ISR(TIMER4_OVF_vect){
-
+    
 }
 
 ISR(TIMER5_OVF_vect){//주기 1ms
@@ -84,10 +84,12 @@ ISR(TIMER5_OVF_vect){//주기 1ms
     OCR4B = lookUp4[num]+32;
     
    
-     if(++num >= 40){
+     if(++num4 >= 40){
       num=0;
      }
 }
+
+
 
 
 /*
